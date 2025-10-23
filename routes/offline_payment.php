@@ -63,7 +63,7 @@ Route::post('/offline-customer-package-paymnet', [CustomerPackageController::cla
 
 // Order Re-Payments
 // Mohammad Hassan - Commented out ManualPaymentMethodController route as controller doesn't exist
-// Route::post('/offline-order-re-payment-modal', [ManualPaymentMethodController::class, 'offline_order_re_payment_modal'])->name('offline_order_re_payment_modal');
+Route::post('/offline-order-re-payment-modal', [ManualPaymentMethodController::class, 'offline_order_re_payment_modal'])->name('offline_order_re_payment_modal');
 
 Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user'], 'as' => 'seller.'], function () {
     // Seller Package purchase

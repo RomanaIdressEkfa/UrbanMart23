@@ -273,6 +273,8 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart/removeFromCart', 'removeFromCart')->name('cart.removeFromCart');
     Route::post('/cart/updateQuantity', 'updateQuantity')->name('cart.updateQuantity');
     Route::post('/cart/updateCartStatus', 'updateCartStatus')->name('cart.updateCartStatus');
+//New added
+     Route::post('/cart/clear-for-buy-now', 'clearCartForBuyNow')->name('cart.clearForBuyNow');
 });
 
 //Paypal START

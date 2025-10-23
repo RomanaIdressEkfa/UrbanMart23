@@ -1058,31 +1058,78 @@ class HomeController extends Controller
         }
     }
 
+
     public function sendEmailUpdateVerificationCode(Request $request)
-    {
-        $user = auth()->user();
-        $phone = $request->phone != null ? '+' . $request->country_code . $request->phone : null;
-        $email = $request->email;
-        if (isUnique($email) == '0') {
-            $response['status'] = 2;
-            $response['message'] = translate('Email already exists!');
-            return json_encode($response);
-        }
-
-        $verificationCode = rand(100000, 999999);
-        $customerVerification = RegistrationVerificationCode::updateOrCreate(
-            ['email' => $email, 'phone' => $phone],
-            ['code' => $verificationCode]
-        );
-
-        try {
-            EmailUtility::email_otp_verification_for_update_email($user, $user->user_type, $verificationCode, $email);
-            $response['status'] = 1;
-            $response['message'] = translate("We've sent a verification code to your previous email address.");
-        } catch (\Exception $e) {
-            $response['status'] = 0;
-            $response['message'] = $e->getMessage();
-        }
-        return json_encode($response);
+{
+    // ধাপ ১: চেক করুন যে নতুন ইমেইলটি অন্য কোনো ব্যবহারকারী ব্যবহার করছে কি না
+    if (User::where('email', $request->email)->where('id', '!=', Auth::id())->exists()) {
+        return response()->json([
+            'status' => 2,
+            'message' => translate('This email is already in use. Please try another one.')
+        ]);
     }
+
+    // ধাপ ২: একটি নতুন ভেরিফিকেশন কোড তৈরি করুন
+    $verificationCode = rand(100000, 999999);
+    $user = auth()->user();
+
+    // ধাপ ৩: "Duplicate entry" এরর সমাধানের জন্য updateOrCreate() ব্যবহার করুন
+    RegistrationVerificationCode::updateOrCreate(
+        [
+            'email' => $request->email // এই কলাম দিয়ে খুঁজবে
+        ],
+        [
+            'code' => $verificationCode, // এই ডেটা দিয়ে আপডেট বা ক্রিয়েট করবে
+            'phone' => null              // ফোন কলামটি null রাখা হলো
+        ]
+    );
+
+    // ধাপ ৪: ইমেইলের মাধ্যমে ভেরিফিকেশন কোড পাঠান
+    try {
+        // আপনার EmailUtility ব্যবহার করে মেইল পাঠানো হচ্ছে
+        EmailUtility::email_otp_verification_for_update_email($user, $user->user_type, $verificationCode, $request->email);
+        
+        // সফলভাবে মেইল পাঠানো হলে এই রেসপন্সটি যাবে
+        return response()->json([
+            'status' => 1,
+            'message' => translate("A verification code has been sent to your new email address.")
+        ]);
+
+    } catch (\Exception $e) {
+        // যদি মেইল পাঠাতে কোনো সমস্যা হয় (যেমন .env কনফিগারেশন ভুল)
+        \Log::error('MAIL_SENDING_ERROR (Email Update): ' . $e->getMessage());
+        return response()->json([
+            'status' => 0,
+            'message' => translate('Could not send the verification email. Please contact support.')
+        ]);
+    }
+}
+
+    // public function sendEmailUpdateVerificationCode(Request $request)
+    // {
+    //     $user = auth()->user();
+    //     $phone = $request->phone != null ? '+' . $request->country_code . $request->phone : null;
+    //     $email = $request->email;
+    //     if (isUnique($email) == '0') {
+    //         $response['status'] = 2;
+    //         $response['message'] = translate('Email already exists!');
+    //         return json_encode($response);
+    //     }
+
+    //     $verificationCode = rand(100000, 999999);
+    //     $customerVerification = RegistrationVerificationCode::updateOrCreate(
+    //         ['email' => $email, 'phone' => $phone],
+    //         ['code' => $verificationCode]
+    //     );
+
+    //     try {
+    //         EmailUtility::email_otp_verification_for_update_email($user, $user->user_type, $verificationCode, $email);
+    //         $response['status'] = 1;
+    //         $response['message'] = translate("We've sent a verification code to your previous email address.");
+    //     } catch (\Exception $e) {
+    //         $response['status'] = 0;
+    //         $response['message'] = $e->getMessage();
+    //     }
+    //     return json_encode($response);
+    // }
 }

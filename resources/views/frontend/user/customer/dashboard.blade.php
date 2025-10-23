@@ -1,7 +1,6 @@
 @extends('frontend.layouts.user_panel')
 
 @section('panel_content')
-
     @php
         $welcomeCoupon = ifUserHasWelcomeCouponAndNotUsed();
     @endphp
@@ -17,7 +16,6 @@
         </div>
     @endif
 
-    {{-- Dynamic Welcome Banner (centered, name/email, attractive UI) --}}
     @php
         $userType = Auth::user()->user_type;
         $name = Auth::user()->name;
@@ -127,7 +125,7 @@
     <div class="row gutters-16 mt-2">
 
         <!-- count summary -->
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-12 col-md-6 mb-4">
             <div class="px-4 bg-white border h-100">
                 <!-- Cart summary -->
                 <div class="d-flex align-items-center py-4 border-bottom">
@@ -151,25 +149,6 @@
                         <span class="fs-14 fw-400 text-secondary">{{ translate('Products in Cart') }}</span>
                     </div>
                 </div>
-
-                <!-- Wishlist summary -->
-                {{-- <div class="d-flex align-items-center py-4 border-bottom">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                        <g id="Group_25000" data-name="Group 25000" transform="translate(-1367 -499)">
-                        <path id="Path_32309" data-name="Path 32309" d="M24,0A24,24,0,1,1,0,24,24,24,0,0,1,24,0Z" transform="translate(1367 499)" fill="#3490f3"/>
-                        <g id="Group_24772" data-name="Group 24772" transform="translate(1383 515)">
-                            <g id="Wooden" transform="translate(0 1)">
-                            <path id="Path_25676" data-name="Path 25676" d="M290.82,413.6a4.5,4.5,0,0,0-6.364,0l-.318.318-.318-.318a4.5,4.5,0,1,0-6.364,6.364l6.046,6.054a.9.9,0,0,0,1.272,0l6.046-6.054A4.5,4.5,0,0,0,290.82,413.6Zm-.707,5.657-5.975,5.984-5.975-5.984a3.5,3.5,0,1,1,4.95-4.95l.389.389a.9.9,0,0,0,1.272,0l.389-.389a3.5,3.5,0,1,1,4.95,4.95Z" transform="translate(-276.138 -412.286)" fill="#fff"/>
-                            </g>
-                            <rect id="Rectangle_1603" data-name="Rectangle 1603" width="16" height="16" transform="translate(0)" fill="none"/>
-                        </g>
-                        </g>
-                    </svg>
-                    <div class="ml-3 d-flex flex-column justify-content-between">
-                        <span class="fs-20 fw-700 mb-1">{{ count(Auth::user()->wishlists) > 0 ? sprintf("%02d", count(Auth::user()->wishlists)) : 0 }}</span>
-                        <span class="fs-14 fw-400 text-secondary">{{ translate('Products in Wishlist') }}</span>
-                    </div>
-                </div> --}}
 
                 <!-- Order summary -->
                 <div class="d-flex align-items-center py-4">
@@ -220,7 +199,7 @@
         @endif
 
         <!-- Default Shipping Address -->
-        <div class="col-xl-4 col-md-6 mb-4">
+        {{-- <div class="col-xl-4 col-md-6 mb-4">
             <div class="p-4 border h-100">
                 <h6 class="fw-700 mb-3 text-dark">{{ translate('Default Shipping Address') }}</h6>
                 @if(Auth::user()->addresses != null)
@@ -242,7 +221,7 @@
                     {{ translate('Add New Address') }}
                 </button>
             </div>
-        </div>
+        </div> --}}
 
     </div>
 

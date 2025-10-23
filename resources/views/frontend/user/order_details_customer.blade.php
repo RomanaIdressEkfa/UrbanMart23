@@ -39,7 +39,7 @@
                             <td>{{ json_decode($order->shipping_address)->address }},
                                 {{ json_decode($order->shipping_address)->city }},
                                 @if(isset(json_decode($order->shipping_address)->state)) {{ json_decode($order->shipping_address)->state }} - @endif
-                                {{ json_decode($order->shipping_address)->postal_code }},
+                                {{-- {{ json_decode($order->shipping_address)->postal_code }}, --}}
                                 {{ json_decode($order->shipping_address)->country }}
                             </td>
                         </tr>
@@ -203,11 +203,11 @@
             </div>
         </div>
 
-        <!-- Order Ammount -->
+        <!-- Order Amount -->
         <div class="col-md-3">
             <div class="card rounded-0 shadow-none border mt-2">
                 <div class="card-header border-bottom-0">
-                    <b class="fs-16 fw-700 text-dark">{{ translate('Order Ammount') }}</b>
+                    <b class="fs-16 fw-700 text-dark">{{ translate('Order Amount') }}</b>
                 </div>
                 <div class="card-body pb-0">
                     <table class="table-borderless table">
@@ -246,7 +246,7 @@
                     </table>
                 </div>
             </div>
-            @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 0)
+            {{-- @if ($order->payment_status == 'unpaid' && $order->delivery_status == 'pending' && $order->manual_payment == 0)
                 <button
                     @if(addon_is_activated('offline_payment'))
                         onclick="select_payment_type({{ $order->id }})"
@@ -256,7 +256,7 @@
                     class="btn btn-block btn-primary">
                     {{ translate('Make Payment') }}
                 </button>
-            @endif
+            @endif --}}
         </div>
     </div>
 @endsection

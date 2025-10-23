@@ -228,9 +228,9 @@
                         @endphp
                         <th style="padding: 8px 12px;">{{ $attributeName ?: translate('Variant') }}</th>
                         <th style="padding: 8px 12px;">{{ translate('Unit Price') }}</th>
-                        @if (Auth::check() && Auth::user()->user_type == 'wholesaler')
+                        {{-- @if (Auth::check() && Auth::user()->user_type == 'wholesaler')
                             <th style="padding: 8px 12px;">{{ translate('Wholesale Tiers') }}</th>
-                        @endif
+                        @endif --}}
                         <th style="padding: 8px 12px;">{{ translate('Total Price') }}</th>
                         @if (!$isOutOfStock || $isPreorderAvailable)
                             <th style="padding: 8px 12px;">{{ translate('Quantity') }}</th>
@@ -288,7 +288,7 @@
                                     ৳{{ number_format($stock->price, 2) }}
                                 @endif
                             </td>
-                            @if (Auth::check() && Auth::user()->user_type == 'wholesaler')
+                            {{-- @if (Auth::check() && Auth::user()->user_type == 'wholesaler')
                                 <td style="padding: 8px 12px;">
                                     @if ($stock->wholesalePrices && $stock->wholesalePrices->count() > 0)
                                         <div class="wholesale-tiers-variant" data-stock-id="{{ $stock->id }}">
@@ -307,7 +307,7 @@
                                         <small class="text-muted">{{ translate('No wholesale tiers') }}</small>
                                     @endif
                                 </td>
-                            @endif
+                            @endif --}}
                             <td class="total-price" style="padding: 8px 12px;">৳ 0.00</td>
                             @if (!$isOutOfStock || $isPreorderAvailable)
                                 <td style="padding: 8px 12px;">
@@ -845,8 +845,6 @@ function extractSelectedItems() {
         if (row.find('.quantity-control').hasClass('active')) {
             const quantity = parseInt(row.find('.quantity-input').val()) || 0;
             if (quantity > 0) {
-                // *** প্রধান এবং চূড়ান্ত পরিবর্তন: টেবিলের দৃশ্যমান Unit Price কলাম থেকে বর্তমান দামটি নেওয়া হচ্ছে ***
-                // এটি নিশ্চিত করবে যে ডিসকাউন্ট বা হোলসেল দামটিই পাঠানো হচ্ছে।
                 const unitPriceText = row.find('.unit-price').text().replace(/[^0-9.]/g, '');
                 const unitPrice = parseFloat(unitPriceText);
 
@@ -881,7 +879,9 @@ function extractSelectedItems() {
         addToCart();
     }
 
-   
+
+// details.blade.php
+
 function buyNowFromTable(isPreorder = false) {
     const selectedItems = extractSelectedItems();
     if (selectedItems.length === 0) {
@@ -889,63 +889,144 @@ function buyNowFromTable(isPreorder = false) {
         return;
     }
 
-    // isPreorder প্যারামিটার বা কোনো আইটেম is_preorder হলে পুরো অর্ডারটি প্রি-অর্ডার হবে
     let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
 
     if (hasPreorderItem) {
-        // --- Pre-order Logic ---
+        // --- Pre-order Logic (এটি অপরিবর্তিত আছে) ---
         const preorderForm = document.createElement('form');
         preorderForm.method = 'POST';
         preorderForm.action = '{{ route('preorder.direct_checkout') }}';
-
+        // ... (বাকি প্রি-অর্ডার কোড)
         const csrfInput = document.createElement('input');
         csrfInput.type = 'hidden';
         csrfInput.name = '_token';
         csrfInput.value = '{{ csrf_token() }}';
         preorderForm.appendChild(csrfInput);
-
         const productIdInput = document.createElement('input');
         productIdInput.type = 'hidden';
         productIdInput.name = 'product_id';
         productIdInput.value = {{ $detailedProduct->id }};
         preorderForm.appendChild(productIdInput);
-
         const selectedItemsInput = document.createElement('input');
         selectedItemsInput.type = 'hidden';
         selectedItemsInput.name = 'selected_items';
         selectedItemsInput.value = JSON.stringify(selectedItems);
         preorderForm.appendChild(selectedItemsInput);
-
         document.body.appendChild(preorderForm);
         preorderForm.submit();
 
     } else {
-        // --- Regular "Buy Now" Logic (Add to cart then redirect) ---
-        setHiddenSelectedItems(selectedItems); // This is from your existing code
-        const form = document.getElementById('option-choice-form');
-        const formData = new FormData(form);
-        formData.append('buy_now', '1');
-
+        // --- Regular "Buy Now" Logic (এখানে প্রধান পরিবর্তন করা হয়েছে) ---
+        
+        // ধাপ ১: প্রথমে কার্ট খালি করার জন্য AJAX রিকোয়েস্ট পাঠানো হচ্ছে
         $.ajax({
             type: "POST",
-            url: '{{ route('cart.addToCart') }}',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                if (data.status == 1) {
-                    // সফলভাবে কার্টে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
-                    window.location.href = "{{ route('checkout') }}";
+            url: '{{ route('cart.clearForBuyNow') }}',
+            data: { _token: '{{ csrf_token() }}' },
+            success: function(clearResponse) {
+                if (clearResponse.status == 1) {
+                    
+                    // ধাপ ২: কার্ট খালি হওয়ার পর, নতুন আইটেম যোগ করার জন্য দ্বিতীয় AJAX রিকোয়েস্ট পাঠানো হচ্ছে
+                    setHiddenSelectedItems(selectedItems);
+                    const form = document.getElementById('option-choice-form');
+                    const formData = new FormData(form);
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('cart.addToCart') }}',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(addResponse) {
+                            if (addResponse.status == 1) {
+                                // সফলভাবে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
+                                window.location.href = "{{ route('checkout') }}";
+                            } else {
+                                AIZ.plugins.notify('danger', addResponse.message || "{{ translate('Something went wrong') }}");
+                            }
+                        },
+                        error: function() {
+                            AIZ.plugins.notify('danger', "{{ translate('Failed to add items to cart.') }}");
+                        }
+                    });
+
                 } else {
-                    AIZ.plugins.notify('danger', data.message || "{{ translate('Something went wrong') }}");
+                     AIZ.plugins.notify('danger', clearResponse.message || "{{ translate('Could not clear cart.') }}");
                 }
             },
             error: function() {
-                AIZ.plugins.notify('danger', "{{ translate('Something went wrong') }}");
+                AIZ.plugins.notify('danger', "{{ translate('An error occurred while preparing your order.') }}");
             }
         });
     }
 }
+
+
+
+   
+// function buyNowFromTable(isPreorder = false) {
+//     const selectedItems = extractSelectedItems();
+//     if (selectedItems.length === 0) {
+//         AIZ.plugins.notify('warning', '{{ translate('Please select at least one item') }}');
+//         return;
+//     }
+
+//     let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
+
+//     if (hasPreorderItem) {
+//         // --- Pre-order Logic ---
+//         const preorderForm = document.createElement('form');
+//         preorderForm.method = 'POST';
+//         preorderForm.action = '{{ route('preorder.direct_checkout') }}';
+
+//         const csrfInput = document.createElement('input');
+//         csrfInput.type = 'hidden';
+//         csrfInput.name = '_token';
+//         csrfInput.value = '{{ csrf_token() }}';
+//         preorderForm.appendChild(csrfInput);
+
+//         const productIdInput = document.createElement('input');
+//         productIdInput.type = 'hidden';
+//         productIdInput.name = 'product_id';
+//         productIdInput.value = {{ $detailedProduct->id }};
+//         preorderForm.appendChild(productIdInput);
+
+//         const selectedItemsInput = document.createElement('input');
+//         selectedItemsInput.type = 'hidden';
+//         selectedItemsInput.name = 'selected_items';
+//         selectedItemsInput.value = JSON.stringify(selectedItems);
+//         preorderForm.appendChild(selectedItemsInput);
+
+//         document.body.appendChild(preorderForm);
+//         preorderForm.submit();
+
+//     } else {
+       
+//         setHiddenSelectedItems(selectedItems); // This is from your existing code
+//         const form = document.getElementById('option-choice-form');
+//         const formData = new FormData(form);
+//         formData.append('buy_now', '1');
+
+//         $.ajax({
+//             type: "POST",
+//             url: '{{ route('cart.addToCart') }}',
+//             data: formData,
+//             processData: false,
+//             contentType: false,
+//             success: function(data) {
+//                 if (data.status == 1) {
+//                     // সফলভাবে কার্টে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
+//                     window.location.href = "{{ route('checkout') }}";
+//                 } else {
+//                     AIZ.plugins.notify('danger', data.message || "{{ translate('Something went wrong') }}");
+//                 }
+//             },
+//             error: function() {
+//                 AIZ.plugins.notify('danger', "{{ translate('Something went wrong') }}");
+//             }
+//         });
+//     }
+// }
 
     $(document).ready(function() {
         loadCartState();

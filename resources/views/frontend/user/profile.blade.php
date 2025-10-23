@@ -69,7 +69,7 @@
 </div>
 
 <!-- Address -->
-<div class="card rounded-0 shadow-none border">
+{{-- <div class="card rounded-0 shadow-none border">
     <div class="card-header pt-4 border-bottom-0">
         <h5 class="mb-0 fs-18 fw-700 text-dark">{{ translate('Address')}}</h5>
     </div>
@@ -139,7 +139,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 
 <!-- Change Email -->
@@ -196,48 +196,67 @@
 @endsection
 
 @section('script')
-@include('frontend.partials.address.address_js')
+    {{-- Address modal js --}}
+    @include('frontend.partials.address.address_js')
 
-<script type="text/javascript">
-    $('.new-email-verification').on('click', function() {
-        $(this).find('.loading').removeClass('d-none');
-        $(this).find('.default').addClass('d-none');
-        var email = $("input[name=email]").val();
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // উপরের jQuery(document).ready(function($) { ... }); লাইনটি নিশ্চিত করে যে,
+            // jQuery লোড হওয়ার পরেই ভেতরের কোডগুলো রান হবে। এতে '$ is not a function' এরর আসবে না।
 
-        $.post('{{ route('user.email.update.verify.code') }}', {
-                _token: '{{ csrf_token() }}',
-                email: email
-            },
-            function(data) {
-                data = JSON.parse(data);
-                $('.default').removeClass('d-none');
-                $('.loading').addClass('d-none');
-                if (data.status == 2){
-                    AIZ.plugins.notify('warning', data.message);
-                }
-                else if (data.status == 1){
-                    AIZ.plugins.notify('success', data.message);
-                    $('input[name="code"]').prop('disabled', false);
-                    $('button[type="submit"]').prop('disabled', false);
-                }
-                else{
-                    AIZ.plugins.notify('danger', data.message);
-                }
+            // --- Email Verification AJAX Call ---
+            $('.new-email-verification').on('click', function() {
+                $(this).find('.loading').removeClass('d-none');
+                $(this).find('.default').addClass('d-none');
+                var email = $("input[name=email]").val();
+
+                $.post('{{ route('user.email.update.verify.code') }}', {
+                    _token: '{{ csrf_token() }}',
+                    email: email
+                },
+                function(data) {
+                    // কন্ট্রোলার থেকে যদি সঠিকভাবে JSON রেসপন্স আসে, তাহলে এই লাইনটির প্রয়োজন নেই।
+                    // data = JSON.parse(data);
+
+                    $('.default').removeClass('d-none');
+                    $('.loading').addClass('d-none');
+
+                    if (data.status == 2) {
+                        AIZ.plugins.notify('warning', data.message);
+                    } else if (data.status == 1) {
+                        AIZ.plugins.notify('success', data.message);
+                        $('input[name="code"]').prop('disabled', false);
+                        // ইমেইল আপডেট বাটনটি খুঁজে বের করে এনাবল করার জন্য একটি আইডি ব্যবহার করা ভালো।
+                        // আমরা ধরে নিচ্ছি যে সাবমিট বাটনটির টাইপ 'submit'।
+                        $('form[action="{{ route('user.change.email') }}"]').find('button[type="submit"]').prop('disabled', false);
+                    } else {
+                        AIZ.plugins.notify('danger', data.message);
+                    }
+                }).fail(function(xhr, status, error) {
+                    // এই অংশটি 500 Internal Server Error হ্যান্ডেল করবে।
+                    $('.default').removeClass('d-none');
+                    $('.loading').addClass('d-none');
+                    AIZ.plugins.notify('danger', 'An error occurred on the server. Please check the logs.');
+                    console.error("AJAX Error:", xhr.responseText);
+                });
             });
-    });
 
-    $(document).ready(function() {
-        @if(get_setting('has_state') == 1)
-            get_states(@json(get_active_countries()[0]->id));
-        @else
-            get_city_by_country(@json(get_active_countries()[0]->id));
-        @endif
-    });
-</script>
 
-@if (get_setting('google_map') == 1)
-@include('frontend.partials.google_map')
-@endif
+            // --- Address related initial function calls ---
+            @if(get_setting('has_state') == 1)
+                get_states(@json(get_active_countries()[0]->id));
+            @else
+                get_city_by_country(@json(get_active_countries()[0]->id));
+            @endif
+
+        });
+    </script>
+
+    {{-- Google Map include --}}
+    @if (get_setting('google_map') == 1)
+        @include('frontend.partials.google_map')
+    @endif
 
 @endsection
+
 

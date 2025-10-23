@@ -43,9 +43,9 @@
               </div>
           </div>
           <div class="col-md-6 text-right">
-              <a type="button" class="btn btn-sm border rounded px-4 py-1 text-muted reorder-btn" href="{{ route('re_order', encrypt($order->id)) }}">
+              {{-- <a type="button" class="btn btn-sm border rounded px-4 py-1 text-muted reorder-btn" href="{{ route('re_order', encrypt($order->id)) }}">
                   {{ translate('Reorder') }}
-              </a>
+              </a> --}}
 
               <div class="d-inline-block dropdown ml-1">
                   <button type="button"
@@ -56,9 +56,9 @@
 
                   <div class="dropdown-menu dropdown-menu-right ">
                       <a class="dropdown-item text-secondary dropdown-bg-hover" href="{{route('purchase_history.details', encrypt($order->id))}}"><i class="las la-eye mr-2"></i>{{ translate('View') }}</a>
-                      <a class="dropdown-item text-secondary dropdown-bg-hover" href="{{ route('invoice.download', $order->id) }}"><i class="las la-download mr-2"></i>{{ translate('Invoice') }}</a>
+                      {{-- <a class="dropdown-item text-secondary dropdown-bg-hover" href="{{ route('invoice.download', $order->id) }}"><i class="las la-download mr-2"></i>{{ translate('Invoice') }}</a> --}}
                       @if ($order->delivery_status == 'pending' && $order->payment_status == 'unpaid')
-                      <a href="javascript:void(0)"  class="dropdown-item text-secondary dropdown-bg-hover confirm-delete" data-href="{{route('purchase_history.destroy', $order->id)}}"><i class="las la-trash mr-2"></i> {{ translate('Cancel') }}</a>
+                      {{-- <a href="javascript:void(0)"  class="dropdown-item text-secondary dropdown-bg-hover confirm-delete" data-href="{{route('purchase_history.destroy', $order->id)}}"><i class="las la-trash mr-2"></i> {{ translate('Cancel') }}</a> --}}
                       @endif
                   </div>
               </div>
