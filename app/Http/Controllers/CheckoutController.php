@@ -35,7 +35,6 @@ class CheckoutController extends Controller
 
     public function index(Request $request)
     {
-        // ... এই মেথডটি অপরিবর্তিত থাকবে ...
         $guest_checkout_enabled = (int) (get_setting('guest_checkout_activation') ?? 0) === 1 || (int) (get_setting('guest_checkout_active') ?? 0) === 1;
         if(!$guest_checkout_enabled && auth()->user() == null){
             return redirect()->route('user.login');

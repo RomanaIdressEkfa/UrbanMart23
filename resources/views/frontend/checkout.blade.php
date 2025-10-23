@@ -17,7 +17,7 @@
                                             {{ translate('Shipping Info') }}
                                         </h3>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body" id="shipping_info">
                                         {{-- Shipping form include --}}
                                         @include('preorder.frontend.partials.modern_shipping_info')
                                     </div>
@@ -216,8 +216,6 @@
                         }
                     });
             @else
-                // Mohammad Hassan - Use customer login for checkout
-                // Mohammad Hassan
 showUserTypeModal(); // Show user type selection modal
             @endif
         });
@@ -261,36 +259,70 @@ showUserTypeModal(); // Show user type selection modal
             AIZ.plugins.bootstrapSelect("refresh");
         }
 
-        function stepCompletionShippingInfo() {
-            var headColor = '#9d9da6';
-            var btnDisable = true;
-            var allOk = false;
-            @if (Auth::check())
-                var length = $('input[name="address_id"]:checked').length;
-                if (length > 0) {
-                    headColor = '#15a405';
-                    btnDisable = false;
-                    allOk = true;
-                }
-            @else
-                var count = 0;
-                var length = $('#shipping_info [required]').length;
-                $('#shipping_info [required]').each(function (i, el) {
-                    if ($(el).val() != '' && $(el).val() != undefined && $(el).val() != null) {
-                        count += 1;
-                    }
-                });
-                if (count == length) {
-                    headColor = '#15a405';
-                    btnDisable = false;
-                    allOk = true;
-                }
-            @endif
+        // function stepCompletionShippingInfo() {
+        //     var headColor = '#9d9da6';
+        //     var btnDisable = true;
+        //     var allOk = false;
+        //     @if (Auth::check())
+        //         var length = $('input[name="address_id"]:checked').length;
+        //         if (length > 0) {
+        //             headColor = '#15a405';
+        //             btnDisable = false;
+        //             allOk = true;
+        //         }
+        //     @else
+        //         var count = 0;
+        //         var length = $('#shipping_info [required]').length;
+        //         $('#shipping_info [required]').each(function (i, el) {
+        //             if ($(el).val() != '' && $(el).val() != undefined && $(el).val() != null) {
+        //                 count += 1;
+        //             }
+        //         });
+        //         if (count == length) {
+        //             headColor = '#15a405';
+        //             btnDisable = false;
+        //             allOk = true;
+        //         }
+        //     @endif
 
-            $('#headingShippingInfo svg *').css('fill', headColor);
-            $("#submitOrderBtn").prop('disabled', btnDisable);
-            return allOk;
+        //     $('#headingShippingInfo svg *').css('fill', headColor);
+        //     $("#submitOrderBtn").prop('disabled', btnDisable);
+        //     return allOk;
+        // }
+
+        // পরিবর্তিত নতুন কোড
+function stepCompletionShippingInfo() {
+    var headColor = '#9d9da6';
+    var btnDisable = true;
+    var allOk = false;
+    
+    // Auth এবং Guest উভয়ের জন্য একই ভ্যালিডেশন লজিক ব্যবহার করা হচ্ছে।
+    var count = 0;
+    // #shipping_info কন্টেইনারের মধ্যে থাকা সব required ফিল্ড চেক করা হচ্ছে।
+    var requiredFields = $('#shipping_info [required]');
+    var length = requiredFields.length;
+
+    requiredFields.each(function (i, el) {
+        if ($(el).val() != '' && $(el).val() != undefined && $(el).val() != null) {
+            count += 1;
         }
+    });
+
+    if (count >= length) { // Use >= to be safe
+        headColor = '#15a405';
+        btnDisable = false;
+        allOk = true;
+    }
+
+    // এই অংশটি সম্ভবত আপনার ডিজাইনে নেই, তবে থাকলে কাজ করবে।
+    if (typeof $('#headingShippingInfo svg *').css === 'function') {
+        $('#headingShippingInfo svg *').css('fill', headColor);
+    }
+    
+    $("#submitOrderBtn").prop('disabled', btnDisable);
+    return allOk;
+}
+      
 
         $('#shipping_info [required]').each(function (i, el) {
             $(el).change(function(){
