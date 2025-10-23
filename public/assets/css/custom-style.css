@@ -1,0 +1,36 @@
+/*your custom css goes here*/ 
+:root {
+    --primary-blue: #3D52A0;
+}
+/* Restore original flag display */
+.iti__flag {
+    display: inline-block !important;
+}
+
+/* Remove any emoji font overrides */
+.iti__country-list .iti__country .iti__flag-container,
+.iti__selected-flag .iti__flag {
+    font-family: inherit !important;
+}
+
+/* Ensure proper flag sizing */
+.iti__flag-container {
+    padding-right: 12px !important;
+}
+
+/* Mohammad Hassan */
+/* Custom preorder badge styling */
+.preorder-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}

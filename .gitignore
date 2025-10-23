@@ -1,0 +1,23 @@
+/bootstrap/compiled.php
+.env
+
+/node_modules
+/storage/*.key
+/storage/debugbar
+/vendor
+vendor.zip
+/temp
+/.idea
+/.vscode
+/.vagrant
+# Mohammad Hassan
+.trae/
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.DS_Store
+.idea/
+/nbproject/private/
+/nbproject
+
