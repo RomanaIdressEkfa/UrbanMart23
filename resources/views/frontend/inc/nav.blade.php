@@ -444,8 +444,8 @@
                     <a href="javascript:void(0)" onclick="openCustomerLogin()"
                         class="text-reset opacity-60 hov-opacity-100 hov-text-primary fs-12 d-inline-block border-right border-soft-light border-width-2 pr-2 ml-3">{{ translate('Login') }}</a>
                     <!-- Mohammad Hassan -->
-                    <a href="{{ route(get_setting('customer_registration_verify') === '1' ? 'registration.verification' : 'user.registration') }}"
-                        class="text-reset opacity-60 hov-opacity-100 hov-text-primary fs-12 d-inline-block py-2 pl-2">{{ translate('Registration') }}</a>
+                    {{-- <a href="{{ route(get_setting('customer_registration_verify') === '1' ? 'registration.verification' : 'user.registration') }}"
+                        class="text-reset opacity-60 hov-opacity-100 hov-text-primary fs-12 d-inline-block py-2 pl-2">{{ translate('Registration') }}</a> --}}
 
                     @if (get_setting('show_language_switcher') == 'on')
                         <div class="dropdown ml-5" id="lang-change-mobile">
@@ -526,7 +526,7 @@
                         {{ translate($accountLabel) }}
                     </a>
                 </li>
-               
+
                 <li class="mr-0">
                     <a href="{{ route('logout') }}"
                         class="fs-13 px-3 py-3 w-100 d-inline-block fw-700 text-primary header_menu_links">
@@ -589,4 +589,3 @@
         });
     </script>
 @endsection
-

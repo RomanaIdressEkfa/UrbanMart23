@@ -992,7 +992,7 @@ public function direct_checkout(Request $request)
         // *** প্রধান পরিবর্তন: ফ্রন্টএন্ড থেকে পাঠানো unit_price সরাসরি ব্যবহার করা হচ্ছে ***
         // যেহেতু আমরা আগের ধাপে জাভাস্ক্রিপ্টে সঠিক দাম পাঠানোর ব্যবস্থা করেছি।
         $unit_price = (float)($item['unit_price'] ?? $stock->price);
-        
+
         $subtotal = $unit_price * $quantity;
         $grand_total = $subtotal; // tax এবং shipping আপাতত ০
 

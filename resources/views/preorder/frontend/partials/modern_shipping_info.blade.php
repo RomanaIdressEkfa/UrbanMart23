@@ -41,7 +41,7 @@
         <!-- Full Name -->
         <div class="form-group mb-3">
             <label class="form-label">{{ translate('Full name') }} <span class="text-danger">*</span></label>
-            <input type="text" class="form-control form-control-lg" name="name" 
+            <input type="text" class="form-control form-control-lg" name="name"
                    value="{{ auth()->check() ? auth()->user()->name : old('name') }}"
                    placeholder="{{ translate('Enter full name') }}" required>
         </div>
@@ -49,7 +49,7 @@
         <!-- Email Address -->
         <div class="form-group mb-3">
             <label class="form-label">{{ translate('Email address') }} <span class="text-danger">*</span></label>
-            <input type="email" class="form-control form-control-lg" name="email" 
+            <input type="email" class="form-control form-control-lg" name="email"
                    value="{{ auth()->check() ? auth()->user()->email : old('email') }}"
                    placeholder="{{ translate('Enter email address') }}" required>
         </div>
@@ -64,7 +64,7 @@
                         +880
                     </span>
                 </div>
-                <input type="tel" class="form-control form-control-lg" name="phone" 
+                <input type="tel" class="form-control form-control-lg" name="phone"
                        value="{{ auth()->check() ? auth()->user()->phone : old('phone') }}"
                        placeholder="{{ translate('Enter 11 digit phone number') }}" pattern="[0-9]{11}" maxlength="11" required>
             </div>
@@ -102,7 +102,7 @@
     <div class="form-check mt-4">
         <input class="form-check-input" type="checkbox" id="terms_conditions" required>
         <label class="form-check-label" for="terms_conditions">
-            {{ translate('I have read and agree to the') }} 
+            {{ translate('I have read and agree to the') }}
             <a href="#" class="text-primary">{{ translate('Terms and Conditions') }}</a>
         </label>
     </div>
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         citySelectEl.addEventListener('change', function() {
             const cityId = this.value;
             const countryId = 18; // Bangladesh default
-            
+
             if (!cityId) { return; }
 
             // Show loading state in summary container
@@ -268,18 +268,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show pickup point field, hide address field
             addressField.classList.add('d-none');
             pickupPointField.classList.remove('d-none');
-            
+
             // Remove required from address, add to pickup point
             addressTextarea.removeAttribute('required');
             pickupSelect.setAttribute('required', 'required');
-            
+
             // Load pickup points
             loadPickupPoints();
         } else {
             // Show address field, hide pickup point field
             addressField.classList.remove('d-none');
             pickupPointField.classList.add('d-none');
-            
+
             // Add required to address, remove from pickup point
             addressTextarea.setAttribute('required', 'required');
             pickupSelect.removeAttribute('required');
@@ -289,20 +289,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to load pickup points
     function loadPickupPoints() {
         const pickupSelect = document.getElementById('pickup_point_select');
-        
+
         // Clear existing options except the first one
         pickupSelect.innerHTML = '<option value="">{{ translate("Choose pickup point") }}</option>';
-        
+
         // Add loading option
         pickupSelect.innerHTML += '<option value="">{{ translate("Loading...") }}</option>';
-        
+
         // Make AJAX request to get pickup points
         fetch('/pickup-points')
             .then(response => response.json())
             .then(data => {
                 // Clear loading option
                 pickupSelect.innerHTML = '<option value="">{{ translate("Choose pickup point") }}</option>';
-                
+
                 // Add pickup points
                 if (data.pickup_points && data.pickup_points.length > 0) {
                     data.pickup_points.forEach(point => {
@@ -320,39 +320,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 pickupSelect.innerHTML = '<option value="">{{ translate("Error loading pickup points") }}</option>';
             });
     }
-    
+
     // Handle delivery option selection
     document.querySelectorAll('.delivery-option').forEach(option => {
         option.addEventListener('click', function() {
             // Remove active class from all options
             document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('active'));
-            
+
             // Add active class to clicked option
             this.classList.add('active');
-            
+
             // Update hidden field
             const deliveryType = this.getAttribute('data-option');
             document.getElementById('delivery_type').value = deliveryType;
-            
+
             // Show/hide appropriate fields
             toggleDeliveryFields(deliveryType);
         });
     });
-    
+
     // Phone number validation for Bangladesh
     const phoneInput = document.querySelector('input[name="phone"]');
     if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
             // Remove any non-digit characters
             let value = e.target.value.replace(/\D/g, '');
-            
+
             // Limit to 11 digits
             if (value.length > 11) {
                 value = value.substring(0, 11);
             }
-            
+
             e.target.value = value;
-            
+
             // Validate Bangladesh mobile number format
             if (value.length === 11 && value.startsWith('01')) {
                 e.target.setCustomValidity('');
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.target.setCustomValidity('');
             }
         });
-        
+
         phoneInput.addEventListener('blur', function(e) {
             const value = e.target.value;
             if (value.length > 0 && (value.length !== 11 || !value.startsWith('01'))) {
@@ -375,10 +375,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function loadBangladeshCities() {
     const citySelect = document.getElementById('preorder_city');
-    
+
     // Clear existing options
     citySelect.innerHTML = '<option value="">{{ translate("Choose city") }}</option>';
-    
+
     // Fetch cities for Bangladesh (country_id = 18) using the existing route
     $.ajax({
         headers: {
@@ -439,7 +439,7 @@ function loadFallbackCities() {
         {id: 7, name: 'Rangpur'},
         {id: 8, name: 'Mymensingh'}
     ];
-    
+
     citySelect.innerHTML = '';
     commonCities.forEach(city => {
         const option = document.createElement('option');

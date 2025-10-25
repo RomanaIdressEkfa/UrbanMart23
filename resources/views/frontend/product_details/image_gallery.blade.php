@@ -2,7 +2,7 @@
     @php
         // Completely safe photo handling
         $photos = [];
-        
+
         try {
             if (isset($detailedProduct->photos) && $detailedProduct->photos !== null) {
                 if (is_array($detailedProduct->photos)) {
@@ -16,21 +16,21 @@
                     }
                 }
             }
-            
+
             // Clean up array - remove empty, null, or invalid entries
             $photos = array_filter($photos, function($photo) {
                 return !empty($photo) && is_string($photo);
             });
-            
+
             // Re-index array to avoid gaps
             $photos = array_values($photos);
-            
+
         } catch (Exception $e) {
             // Log error and set empty array as fallback
             \Log::error('Product photos error: ' . $e->getMessage());
             $photos = [];
         }
-        
+
         // Get stock images safely
         $stockImages = [];
         try {
@@ -46,20 +46,20 @@
             $stockImages = [];
         }
     @endphp
-    
+
     <!-- Gallery Images -->
     <div class="col-12">
         <div class="modern-product-gallery">
             <div class="main-image-container">
                 @php $totalImages = count($photos) + count($stockImages); @endphp
-                
+
                 @if ($totalImages > 0)
                     <div class="aiz-carousel product-gallery arrow-inactive-transparent arrow-lg-none"
-                        data-nav-for='.product-gallery-thumb' 
-                        data-fade='true' 
-                        data-auto-height='true' 
+                        data-nav-for='.product-gallery-thumb'
+                        data-fade='true'
+                        data-auto-height='true'
                         data-arrows='true'>
-                        
+
                         <!-- Stock Images First -->
                         @if (!empty($stockImages))
                             @foreach ($stockImages as $index => $stock)
@@ -71,7 +71,7 @@
                                             alt="{{ $detailedProduct->getTranslation('name') }} - {{ $stock->variant ?? 'Variant' }}"
                                             data-zoom="{{ uploaded_asset($stock->image) }}"
                                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-                                        
+
                                         <!-- Image overlay info -->
                                         @if (isset($stock->variant))
                                             <div class="image-overlay">
@@ -82,14 +82,14 @@
                                 </div>
                             @endforeach
                         @endif
-                        
+
                         <!-- Regular Product Photos -->
                         @if (!empty($photos))
                             @foreach ($photos as $index => $photo)
                                 <div class="carousel-box img-zoom rounded-0">
                                     <div class="image-wrapper">
                                         <img class="img-fluid h-auto lazyload mx-auto main-product-image"
-                                            src="{{ static_asset('assets/img/placeholder.jpg') }}" 
+                                            src="{{ static_asset('assets/img/placeholder.jpg') }}"
                                             data-src="{{ uploaded_asset($photo) }}"
                                             alt="{{ $detailedProduct->getTranslation('name') }} - Image {{ $index + 1 }}"
                                             data-zoom="{{ uploaded_asset($photo) }}"
@@ -99,12 +99,12 @@
                             @endforeach
                         @endif
                     </div>
-                    
+
                     <!-- Image Counter -->
                     <div class="image-counter">
                         <span class="current-image">1</span> / <span class="total-images">{{ $totalImages }}</span>
                     </div>
-                    
+
                 @else
                     <!-- No Images Available -->
                     <div class="no-image-container">
@@ -122,18 +122,18 @@
     <div class="col-12 mt-3 d-none d-lg-block">
         @if ($totalImages > 1)
             <div class="thumbnail-gallery-container">
-                <div class="aiz-carousel half-outside-arrow product-gallery-thumb" 
-                     data-items='{{ min($totalImages, 7) }}' 
+                <div class="aiz-carousel half-outside-arrow product-gallery-thumb"
+                     data-items='{{ min($totalImages, 7) }}'
                      data-nav-for='.product-gallery'
-                     data-focus-select='true' 
-                     data-arrows='{{ $totalImages > 7 ? "true" : "false" }}' 
-                     data-vertical='false' 
+                     data-focus-select='true'
+                     data-arrows='{{ $totalImages > 7 ? "true" : "false" }}'
+                     data-vertical='false'
                      data-auto-height='true'>
 
                     <!-- Stock Thumbnails -->
                     @if (!empty($stockImages))
                         @foreach ($stockImages as $index => $stock)
-                            <div class="carousel-box c-pointer rounded-0 thumbnail-item" 
+                            <div class="carousel-box c-pointer rounded-0 thumbnail-item"
                                  data-variation="{{ $stock->variant ?? '' }}"
                                  data-index="{{ $index }}"
                                  title="{{ $stock->variant ?? 'Variant ' . ($index + 1) }}">
@@ -143,7 +143,7 @@
                                         data-src="{{ uploaded_asset($stock->image) }}"
                                         alt="Thumbnail {{ $index + 1 }}"
                                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
-                                    
+
                                     @if (isset($stock->variant))
                                         <div class="thumbnail-label">{{ Str::limit($stock->variant, 10) }}</div>
                                     @endif
@@ -155,12 +155,12 @@
                     <!-- Regular Photo Thumbnails -->
                     @if (!empty($photos))
                         @foreach ($photos as $index => $photo)
-                            <div class="carousel-box c-pointer rounded-0 thumbnail-item" 
+                            <div class="carousel-box c-pointer rounded-0 thumbnail-item"
                                  data-index="{{ count($stockImages) + $index }}"
                                  title="Image {{ $index + 1 }}">
                                 <div class="thumbnail-wrapper">
                                     <img class="lazyload mw-100 size-60px mx-auto border p-1 thumbnail-image"
-                                        src="{{ static_asset('assets/img/placeholder.jpg') }}" 
+                                        src="{{ static_asset('assets/img/placeholder.jpg') }}"
                                         data-src="{{ uploaded_asset($photo) }}"
                                         alt="Thumbnail {{ $index + 1 }}"
                                         onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
@@ -199,7 +199,7 @@
     transition: transform 0.3s ease;
     cursor: zoom-in;
     width: 100% !important;
-    height: 100% !important;
+    /* height: 100% !important; */
     object-fit: contain;
 }
 
@@ -317,7 +317,7 @@ $(document).ready(function() {
     $('.product-gallery').on('afterChange', function(event, slick, currentSlide) {
         $('.current-image').text(currentSlide + 1);
     });
-    
+
     // Handle image loading errors
     $('.main-product-image, .thumbnail-image').on('error', function() {
         $(this).closest('.carousel-box').addClass('image-error')

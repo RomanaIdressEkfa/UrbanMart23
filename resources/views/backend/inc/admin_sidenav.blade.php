@@ -556,7 +556,7 @@
             </a>
         </li>
         @endcan
-        
+
         @can('view_all_preorder_products')
         <li class="aiz-side-nav-item">
             <a href="{{ route('admin.preorder.products.all') }}" class="aiz-side-nav-link {{ areActiveRoutes(['admin.preorder.products.all']) }}">
@@ -564,7 +564,7 @@
             </a>
         </li>
         @endcan
-        
+
         @can('view_all_preorders')
         <li class="aiz-side-nav-item">
             <a href="{{ route('admin.preorder.payments.advance') }}" class="aiz-side-nav-link {{ areActiveRoutes(['admin.preorder.payments.advance', 'preorders.show']) }}">
@@ -606,7 +606,7 @@
                         </li>
                         @endcan
 
-                        {{-- @can('view_all_orders') 
+                        {{-- @can('view_all_orders')
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('completed_orders.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['completed_orders.index'])}}">
                                     <span class="aiz-side-nav-text">{{translate('Completed Orders')}}</span>
@@ -1696,7 +1696,7 @@
                         @endcan --}}
                         {{-- @can('edit_website_page')
                         <li class="aiz-side-nav-item">
-                       
+
                             <a href="{{ route('custom-pages.edit', 'home') }}"
                                 class="aiz-side-nav-link {{ (url()->current() == url('/admin/website/custom-pages/home/edit')) ? 'active' : '' }}">
                                 <span class="aiz-side-nav-text">{{translate('Homepage Settings')}}</span>
@@ -1816,14 +1816,14 @@
                             </a>
                         </li>
                         @endcan
-                        @can('file_system_&_cache_configuration')
+                        {{-- @can('file_system_&_cache_configuration')
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('file_system.index') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">{{translate('File System & Cache
                                     Configuration')}}</span>
                             </a>
                         </li>
-                        @endcan
+                        @endcan --}}
 
 
                         @canany(['shipping_configuration','select_shipping_methods','shipping_country_setting','manage_shipping_states','manage_shipping_cities','manage_zones','manage_carriers'])
@@ -1835,22 +1835,22 @@
                             <ul class="aiz-side-nav-list level-3">
 
 
-                                @can('select_shipping_methods')
+                                {{-- @can('select_shipping_methods')
                                     <li class="aiz-side-nav-item">
                                         <a href="{{route('shipping_configuration.shipping_method')}}"
                                             class="aiz-side-nav-link {{ areActiveRoutes(['shipping_configuration.shipping_method'])}}">
                                             <span class="aiz-side-nav-text">{{translate('Select Shipping Method')}}</span>
                                         </a>
                                     </li>
-                                @endcan
-                                @can('shipping_configuration')
+                                @endcan --}}
+                                {{-- @can('shipping_configuration')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('shipping_configuration.index')}}"
                                         class="aiz-side-nav-link {{ areActiveRoutes(['shipping_configuration.index','shipping_configuration.edit','shipping_configuration.update'])}}">
                                         <span class="aiz-side-nav-text">{{translate('Shipping Configuration')}}</span>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcan --}}
                                 @can('shipping_country_setting')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('countries.index')}}"
@@ -1883,22 +1883,22 @@
                                     </a>
                                 </li>
                                 @endcan
-                                @can('manage_zones')
+                                {{-- @can('manage_zones')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('zones.index')}}"
                                         class="aiz-side-nav-link {{ areActiveRoutes(['zones.index','zones.create','zones.edit'])}}">
                                         <span class="aiz-side-nav-text">{{translate('Shipping Zones')}}</span>
                                     </a>
                                 </li>
-                                @endcan
-                                @can('manage_carriers')
+                                @endcan --}}
+                                {{-- @can('manage_carriers')
                                 <li class="aiz-side-nav-item">
                                     <a href="{{route('carriers.index')}}"
                                         class="aiz-side-nav-link {{ areActiveRoutes(['carriers.index','carriers.create','carriers.edit'])}}">
                                         <span class="aiz-side-nav-text">{{translate('Shipping Carrier')}}</span>
                                     </a>
                                 </li>
-                                @endcan
+                                @endcan --}}
                             </ul>
                         </li>
                         @endif

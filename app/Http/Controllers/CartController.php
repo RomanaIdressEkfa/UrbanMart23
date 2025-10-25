@@ -215,7 +215,7 @@ public function addToCart(Request $request)
                 $cart->product_id = $product->id;
                 $cart->variation = $variant;
             }
-            
+
             // স্টক চেক (প্রি-অর্ডার ছাড়া)
             if (!$item['is_preorder'] && $product->digital != 1 && $product_stock->qty < $quantity) {
                 return response()->json([
@@ -254,12 +254,12 @@ public function addToCart(Request $request)
                 }
             }
         }
-        
+
         $product_stock = $product->stocks->where('variant', $str)->first();
         if(!$product_stock){
             return response()->json(['status' => 0, 'message' => translate('Variant not found.')]);
         }
-        
+
         $price = CartUtility::get_price($product, $product_stock, $quantity, $user);
         $tax = CartUtility::tax_calculation($product, $price);
 
@@ -284,7 +284,7 @@ public function addToCart(Request $request)
     if (empty($added_cart_items)) {
         return response()->json(['status' => 0, 'message' => translate('No items were added to the cart.')]);
     }
-    
+
     $carts = $user ? Cart::where('user_id', $user->id)->get() : Cart::where('temp_user_id', $temp_user_id)->get();
     return response()->json([
         'status' => 1,

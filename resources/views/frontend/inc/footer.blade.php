@@ -258,7 +258,7 @@
                 : 'col-md-4 col-sm-6';
     @endphp
     <div class="py-lg-3 text-light footer-widget footer-bottom">
-        <!-- footer widgets ========== [Accordion Fotter widgets are bellow from this]-->
+        <!-- footer widgets ========== [Desktop View] -->
         <div class="container d-none d-lg-block">
             <div class="row">
                 <!-- Quick links -->
@@ -308,7 +308,7 @@
                                 <p class="fs-13 text-secondary mb-1">{{ translate('Email') }}</p>
                                 <p class="">
                                     <a href="mailto:{{ get_setting('contact_email') }}"
-                                        class="fs-13 text-soft-light hov-text-primary">{{ get_setting('contact_email') }}</a>
+                                        class="fs-11 text-soft-light hov-text-primary">{{ get_setting('contact_email') }}</a>
                                 </p>
                             </li>
                         </ul>
@@ -432,18 +432,16 @@
             </div>
         </div>
 
-        <!-- Accordion Fotter widgets -->
-        <div class="d-lg-none bg-transparent">
-            <!-- Quick links -->
-            <div class="aiz-accordion-wrap ">
-                <div class="aiz-accordion-heading container">
-                    <button
-                        class="aiz-accordion fs-14 text-white bg-transparent">{{ get_setting('widget_one', null, App::getLocale()) }}</button>
-                </div>
-                <div class="aiz-accordion-panel bg-transparent"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)!important;">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
+        <!-- NEW: Footer widgets for mobile -->
+        <div class="d-lg-none py-4 text-left">
+            <div class="container">
+                <div class="row">
+                    <!-- Quick links -->
+                    <div class="col-6 mb-4">
+                        <h4 class="fs-14 text-secondary text-uppercase fw-700 mb-3">
+                            {{ get_setting('widget_one', null, App::getLocale()) }}
+                        </h4>
+                        <ul class="list-unstyled">
                             @if (get_setting('widget_one_labels', null, App::getLocale()) != null)
                                 @foreach (json_decode(get_setting('widget_one_labels', null, App::getLocale()), true) as $key => $value)
                                     @php
@@ -454,9 +452,9 @@
                                             ];
                                         }
                                     @endphp
-                                    <li class="mb-2 pb-2 @if (url()->current() == $widget_one_links) active @endif">
+                                    <li class="mb-2">
                                         <a href="{{ $widget_one_links }}"
-                                            class="fs-13 text-soft-light text-sm-secondary animate-underline-white">
+                                            class="fs-13 text-soft-light animate-underline-white">
                                             {{ $value }}
                                         </a>
                                     </li>
@@ -464,18 +462,11 @@
                             @endif
                         </ul>
                     </div>
-                </div>
-            </div>
 
-            <!-- Contacts -->
-            <div class="aiz-accordion-wrap">
-                <div class="aiz-accordion-heading container">
-                    <button class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('Contacts') }}</button>
-                </div>
-                <div class="aiz-accordion-panel bg-transparent"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)!important;">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
+                    <!-- Contacts -->
+                    <div class="col-6 mb-4">
+                        <h4 class="fs-14 text-secondary text-uppercase fw-700 mb-3">{{ translate('Contacts') }}</h4>
+                        <ul class="list-unstyled">
                             <li class="mb-2">
                                 <p class="fs-13 text-secondary mb-1">{{ translate('Address') }}</p>
                                 <p class="fs-13 text-soft-light">
@@ -489,60 +480,52 @@
                                 <p class="fs-13 text-secondary mb-1">{{ translate('Email') }}</p>
                                 <p class="">
                                     <a href="mailto:{{ get_setting('contact_email') }}"
-                                        class="fs-13 text-soft-light hov-text-primary">{{ get_setting('contact_email') }}</a>
+                                        class="fs-12 text-soft-light hov-text-primary">{{ get_setting('contact_email') }}</a>
                                 </p>
                             </li>
                         </ul>
                     </div>
-                </div>
-            </div>
 
-            <!-- My Account -->
-            <div class="aiz-accordion-wrap">
-                <div class="aiz-accordion-heading container ">
-                    <button
-                        class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('My Account') }}</button>
-                </div>
-                <div class="aiz-accordion-panel bg-transparent"
-                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)!important;">
-                    <div class="container">
-                        <ul class="list-unstyled mt-3">
-                            @auth
-                                <li class="mb-2 pb-2">
-                                    <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                    <!-- My Account -->
+                    <div class="col-6 mb-4">
+                        <h4 class="fs-14 text-secondary text-uppercase fw-700 mb-3">{{ translate('My Account') }}</h4>
+                        <ul class="list-unstyled">
+                            @if (Auth::check())
+                                <li class="mb-2">
+                                    <a class="fs-13 text-soft-light animate-underline-white"
                                         href="{{ route('logout') }}">
                                         {{ translate('Logout') }}
                                     </a>
                                 </li>
                             @else
-                                <li class="mb-2 pb-2 {{ areActiveRoutes(['user.login'], ' active') }}">
-                                    <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                                <li class="mb-2">
+                                    <a class="fs-13 text-soft-light animate-underline-white"
                                         href="{{ route('user.login') }}">
                                         {{ translate('Login') }}
                                     </a>
                                 </li>
-                            @endauth
-                            <li class="mb-2 pb-2 {{ areActiveRoutes(['purchase_history.index'], ' active') }}">
-                                <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                            @endif
+                            <li class="mb-2">
+                                <a class="fs-13 text-soft-light animate-underline-white"
                                     href="{{ route('purchase_history.index') }}">
                                     {{ translate('Order History') }}
                                 </a>
                             </li>
-                            <li class="mb-2 pb-2 {{ areActiveRoutes(['wishlists.index'], ' active') }}">
-                                <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                            <li class="mb-2">
+                                <a class="fs-13 text-soft-light animate-underline-white"
                                     href="{{ route('wishlists.index') }}">
                                     {{ translate('My Wishlist') }}
                                 </a>
                             </li>
-                            <li class="mb-2 pb-2 {{ areActiveRoutes(['orders.track'], ' active') }}">
-                                <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                            <li class="mb-2">
+                                <a class="fs-13 text-soft-light animate-underline-white"
                                     href="{{ route('orders.track') }}">
                                     {{ translate('Track Order') }}
                                 </a>
                             </li>
                             @if (addon_is_activated('affiliate_system'))
-                                <li class="mb-2 pb-2 {{ areActiveRoutes(['affiliate.apply'], ' active') }}">
-                                    <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
+                                <li class="mb-2">
+                                    <a class="fs-13 text-soft-light animate-underline-white"
                                         href="{{ route('affiliate.apply') }}">
                                         {{ translate('Be an affiliate partner') }}
                                     </a>
@@ -550,82 +533,71 @@
                             @endif
                         </ul>
                     </div>
+
+                    <!-- Seller & Delivery Boy -->
+                    @if (get_setting('vendor_system_activation') == 1 || addon_is_activated('delivery_boy'))
+                        <div class="col-6 mb-4">
+                            <!-- Seller -->
+                            @if (get_setting('vendor_system_activation') == 1)
+                                <h4 class="fs-14 text-secondary text-uppercase fw-700 mb-3">
+                                    {{ translate('Seller Zone') }}</h4>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <p class="fs-13 text-soft-light mb-0">
+                                            {{ translate('Become A Seller') }}
+                                            <a href="{{ route(get_setting('seller_registration_verify') === '1' ? 'shop-reg.verification' : 'shops.create') }}"
+                                                class="fs-13 fw-700 text-secondary-base ml-2">{{ translate('Apply Now') }}</a>
+                                        </p>
+                                    </li>
+                                    @guest
+                                        <li class="mb-2">
+                                            <a class="fs-13 text-soft-light animate-underline-white"
+                                                href="{{ route('seller.login') }}">
+                                                {{ translate('Login to Seller Panel') }}
+                                            </a>
+                                        </li>
+                                    @endguest
+                                    @if (get_setting('seller_app_link'))
+                                        <li class="mb-2">
+                                            <a class="fs-13 text-soft-light animate-underline-white" target="_blank"
+                                                href="{{ get_setting('seller_app_link') }}">
+                                                {{ translate('Download Seller App') }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            @endif
+
+                            <!-- Delivery Boy -->
+                            @if (addon_is_activated('delivery_boy'))
+                                <h4 class="fs-14 text-secondary text-uppercase fw-700 mt-4 mb-3">
+                                    {{ translate('Delivery Boy') }}</h4>
+                                <ul class="list-unstyled">
+                                    @guest
+                                        <li class="mb-2">
+                                            <a class="fs-13 text-soft-light animate-underline-white"
+                                                href="{{ route('deliveryboy.login') }}">
+                                                {{ translate('Login to Delivery Boy Panel') }}
+                                            </a>
+                                        </li>
+                                    @endguest
+
+                                    @if (get_setting('delivery_boy_app_link'))
+                                        <li class="mb-2">
+                                            <a class="fs-13 text-soft-light animate-underline-white" target="_blank"
+                                                href="{{ get_setting('delivery_boy_app_link') }}">
+                                                {{ translate('Download Delivery Boy App') }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
-
-            <!-- Seller -->
-            @if (get_setting('vendor_system_activation') == 1)
-                <div class="aiz-accordion-wrap ">
-                    <div class="aiz-accordion-heading container ">
-                        <button
-                            class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('Seller Zone') }}</button>
-                    </div>
-                    <div class="aiz-accordion-panel bg-transparent"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)!important;">
-                        <div class="container">
-                            <ul class="list-unstyled mt-3">
-                                <li class="mb-2 pb-2 {{ areActiveRoutes(['shops.create'], ' active') }}">
-                                    <p class="fs-13 text-soft-light text-sm-secondary mb-0">
-                                        {{ translate('Become A Seller') }}
-                                        <a href="{{ route(get_setting('seller_registration_verify') === '1' ? 'shop-reg.verification' : 'shops.create') }}"
-                                            class="fs-13 fw-700 text-secondary-base ml-2">{{ translate('Apply Now') }}</a>
-                                    </p>
-                                </li>
-                                @guest
-                                    <li class="mb-2 pb-2 {{ areActiveRoutes(['deliveryboy.login'], ' active') }}">
-                                        <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
-                                            href="{{ route('seller.login') }}">
-                                            {{ translate('Login to Seller Panel') }}
-                                        </a>
-                                    </li>
-                                @endguest
-                                @if (get_setting('seller_app_link'))
-                                    <li class="mb-2 pb-2">
-                                        <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
-                                            target="_blank" href="{{ get_setting('seller_app_link') }}">
-                                            {{ translate('Download Seller App') }}
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Delivery Boy -->
-            @if (addon_is_activated('delivery_boy'))
-                <div class="aiz-accordion-wrap bg-black">
-                    <div class="aiz-accordion-heading container bg-black">
-                        <button
-                            class="aiz-accordion fs-14 text-white bg-transparent">{{ translate('Delivery Boy') }}</button>
-                    </div>
-                    <div class="aiz-accordion-panel bg-transparent"
-                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)!important;">
-                        <div class="container">
-                            <ul class="list-unstyled mt-3">
-                                @guest
-                                    <li class="mb-2 pb-2 {{ areActiveRoutes(['deliveryboy.login'], ' active') }}">
-                                        <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
-                                            href="{{ route('deliveryboy.login') }}">
-                                            {{ translate('Login to Delivery Boy Panel') }}
-                                        </a>
-                                    </li>
-                                @endguest
-                                @if (get_setting('delivery_boy_app_link'))
-                                    <li class="mb-2 pb-2">
-                                        <a class="fs-13 text-soft-light text-sm-secondary animate-underline-white"
-                                            target="_blank" href="{{ get_setting('delivery_boy_app_link') }}">
-                                            {{ translate('Download Delivery Boy App') }}
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
+
     </div>
 
     <!-- FOOTER -->
@@ -647,9 +619,8 @@
                             @if (get_setting('payment_method_images') != null)
                                 @foreach (explode(',', get_setting('payment_method_images')) as $key => $value)
                                     <li class="list-inline-item mr-3">
-                                        <img src="{{ uploaded_asset($value) }}" height="20"
-                                            class="mw-100 h-auto" style="max-height: 40px"
-                                            alt="{{ translate('payment_method') }}">
+                                        <img src="{{ uploaded_asset($value) }}" height="20" class="mw-100 h-auto"
+                                            style="max-height: 40px" alt="{{ translate('payment_method') }}">
                                     </li>
                                 @endforeach
                             @endif
@@ -1054,11 +1025,6 @@
                     </a>
                 @endif
             </div>
-
-
-
-
-
         </div>
     </div>
 
@@ -1073,4 +1039,3 @@
         </div>
     @endif
 </section>
-

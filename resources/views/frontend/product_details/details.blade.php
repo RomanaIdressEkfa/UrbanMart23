@@ -216,7 +216,7 @@
             style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
             <table class="table table-bordered mb-0" id="sizeTable">
                 <thead class="bg-light sticky-top">
-                    <tr >
+                    <tr>
                         @php
                             $attributeName = '';
                             if ($detailedProduct->choice_options != null) {
@@ -246,12 +246,16 @@
                             // Use variant-specific discount price if available, otherwise use original price
                             $row_base_price = (float) $stock->price;
                             $variant_discount_price = (float) ($stock->discount_price ?? 0);
-                            
+
                             // If variant has a discount price, use it; otherwise use original price
-                            $row_discounted_price = $variant_discount_price > 0 ? $variant_discount_price : $row_base_price;
-                            
+                            $row_discounted_price =
+                                $variant_discount_price > 0 ? $variant_discount_price : $row_base_price;
+
                             // For wholesalers, still use original logic if no variant discount
-                            if (!(Auth::check() && Auth::user()->user_type == 'wholesaler') && $variant_discount_price == 0) {
+                            if (
+                                !(Auth::check() && Auth::user()->user_type == 'wholesaler') &&
+                                $variant_discount_price == 0
+                            ) {
                                 if ($detailedProduct->discount_type == 'percent' && $detailedProduct->discount > 0) {
                                     $row_discounted_price =
                                         $row_base_price - ($row_base_price * $detailedProduct->discount) / 100;
@@ -268,8 +272,8 @@
                             $isPreorderAvailable = $isOutOfStock && $detailedProduct->is_preorder;
                         @endphp
                         <tr data-size="{{ $variantId }}" data-original-price="{{ $stock->price }}"
-                            data-discounted-price="{{ $variant_discount_price > 0 ? $variant_discount_price : $stock->price }}" data-stock-qty="{{ $stock->qty }}"
-                            data-stock-id="{{ $stock->id }}"
+                            data-discounted-price="{{ $variant_discount_price > 0 ? $variant_discount_price : $stock->price }}"
+                            data-stock-qty="{{ $stock->qty }}" data-stock-id="{{ $stock->id }}"
                             data-is-preorder="{{ $isPreorderAvailable ? 'true' : 'false' }}" style="height: 60px;">
                             <td style="padding: 8px 12px;">{{ $variantName }}</td>
                             <td class="unit-price" style="padding: 8px 12px;">
@@ -278,9 +282,10 @@
                                     $unit_price = $variant_discount_price > 0 ? $variant_discount_price : $stock->price;
                                     $original_price = $stock->price;
                                 @endphp
-                                @if($variant_discount_price > 0 && $variant_discount_price != $original_price)
+                                @if ($variant_discount_price > 0 && $variant_discount_price != $original_price)
                                     <div>
-                                        <span class="text-primary fw-bold">৳{{ number_format($variant_discount_price, 2) }}</span>
+                                        <span
+                                            class="text-primary fw-bold">৳{{ number_format($variant_discount_price, 2) }}</span>
                                         <br>
                                         <del class="text-muted">৳{{ number_format($original_price, 2) }}</del>
                                     </div>
@@ -320,8 +325,8 @@
                                             <button type="button" class="btn btn-sm minus-btn"
                                                 style="background: #3D52A0; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;"
                                                 onclick="decreaseQuantity(this)">-</button>
-                                            <input type="number" class="quantity-input mx-2 text-center"
-                                                value="0" min="0"
+                                            <input type="number" class="quantity-input mx-2 text-center" value="0"
+                                                min="0"
                                                 @if ($isOutOfStock && $isPreorderAvailable) max="999999" @else max="{{ $stock->qty }}" @endif
                                                 style="width: 40px; height: 30px;">
                                             <button type="button" class="btn btn-sm plus-btn"
@@ -369,17 +374,18 @@
                     <i class="fas fa-exclamation-triangle mr-2"></i>
                     {{ translate('This product is currently out of stock. You can place a pre-order.') }}
                 </div>
-                <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3 ">
                     <button type="button" class="btn btn-primary buy-now fw-600 px-4 py-2 rounded-lg"
-                        style="min-width: 160px; background: #fd7e14; border: none;"
-                        onclick="buyNowFromTable(true)">
+                        style="min-width: 160px; background: #fd7e14; border: none;" onclick="buyNowFromTable(true)">
                         <i class="la la-calendar-check mr-1"></i> {{ translate('Pre-order Now') }}
                     </button>
                 </div>
                 <div class="mt-2">
                     <small class="text-muted">
                         <i class="fas fa-info-circle text-info"></i>
-                        {{ translate('Pre-order requires advance payment') }} ({{ $detailedProduct->getPreorderPaymentPercentage() }}%). {{ translate('Remaining amount due on delivery.') }}
+                        {{ translate('Pre-order requires advance payment') }}
+                        ({{ $detailedProduct->getPreorderPaymentPercentage() }}%).
+                        {{ translate('Remaining amount due on delivery.') }}
                     </small>
                 </div>
             @elseif($isOutOfStock && !$isPreorderAvailable)
@@ -402,15 +408,13 @@
                 </div>
             @else
                 {{-- Regular buttons for in-stock products --}}
-                <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3 sameline">
                     <button type="button" class="btn btn-info add-to-cart fw-600 px-4 py-2 rounded-lg text-white"
-                        style="min-width: 160px; background: #17a2b8; border: none;"
-                        onclick="addToCartFromTable()">
+                        style="min-width: 160px; background: #17a2b8; border: none;" onclick="addToCartFromTable()">
                         <i class="las la-shopping-bag mr-1"></i> {{ translate('Add to Cart') }}
                     </button>
                     <button type="button" class="btn btn-primary buy-now fw-600 px-4 py-2 rounded-lg"
-                        style="min-width: 160px; background: #3D52A0; border: none;"
-                        onclick="buyNowFromTable()">
+                        style="min-width: 160px; background: #3D52A0; border: none;" onclick="buyNowFromTable()">
                         <i class="la la-shopping-cart mr-1"></i> {{ translate('Buy Now') }}
                     </button>
                 </div>
@@ -540,6 +544,13 @@
     .gap-3 {
         gap: 1rem;
     }
+
+    @media(max-width:768px) {
+        .sameline {
+            display: flex;
+            flex-direction: column;
+        }
+    }
 </style>
 
 <script type="text/javascript">
@@ -655,7 +666,7 @@
 
     // আপনার <script> ট্যাগের ভেতরে এই ফাংশনটি প্রতিস্থাপন করুন
 
-  function updateGrandTotal() {
+    function updateGrandTotal() {
         let totalQuantity = 0;
         $('#sizeTable tbody tr .quantity-input').each(function() {
             if ($(this).closest('.quantity-control').hasClass('active')) {
@@ -664,7 +675,7 @@
         });
 
         let activeTierPrice = null;
-        
+
         @if (Auth::check() && Auth::user()->user_type == 'wholesaler')
             let activeMinQty = 0;
             if (PRICE_TIERS.length > 0) {
@@ -687,7 +698,7 @@
             const quantity = parseInt(row.find('.quantity-input').val()) || 0;
             const originalPrice = parseFloat(row.data('original-price'));
             const discountedPrice = parseFloat(row.data('discounted-price'));
-            
+
             // --- আপনার ৩টি শর্ত অনুযায়ী চূড়ান্ত Unit Price নির্ধারণ ---
             let unitPrice = originalPrice; // শর্ত ১: ডিফল্ট দাম
 
@@ -721,14 +732,15 @@
             // UI আপডেট
             let unitPriceHtml = `৳${unitPrice.toFixed(2)}`;
             if (unitPrice < originalPrice) {
-                unitPriceHtml = `<div><span class="text-primary fw-bold">৳${unitPrice.toFixed(2)}</span><br><del class="text-muted">৳${originalPrice.toFixed(2)}</del></div>`;
+                unitPriceHtml =
+                    `<div><span class="text-primary fw-bold">৳${unitPrice.toFixed(2)}</span><br><del class="text-muted">৳${originalPrice.toFixed(2)}</del></div>`;
             }
             row.find('.unit-price').html(unitPriceHtml);
 
             const totalPrice = (quantity > 0) ? (unitPrice * quantity) : 0;
             row.find('.total-price').text('৳' + totalPrice.toFixed(2));
         });
-        
+
         saveCartState();
     }
 
@@ -838,29 +850,29 @@
         updateGrandTotal();
     }
 
-function extractSelectedItems() {
-    const selectedItems = [];
-    $('#sizeTable tbody tr').each(function() {
-        const row = $(this);
-        if (row.find('.quantity-control').hasClass('active')) {
-            const quantity = parseInt(row.find('.quantity-input').val()) || 0;
-            if (quantity > 0) {
-                const unitPriceText = row.find('.unit-price').text().replace(/[^0-9.]/g, '');
-                const unitPrice = parseFloat(unitPriceText);
+    function extractSelectedItems() {
+        const selectedItems = [];
+        $('#sizeTable tbody tr').each(function() {
+            const row = $(this);
+            if (row.find('.quantity-control').hasClass('active')) {
+                const quantity = parseInt(row.find('.quantity-input').val()) || 0;
+                if (quantity > 0) {
+                    const unitPriceText = row.find('.unit-price').text().replace(/[^0-9.]/g, '');
+                    const unitPrice = parseFloat(unitPriceText);
 
-                selectedItems.push({
-                    size: row.data('size'),
-                    quantity: quantity,
-                    is_preorder: row.data('is-preorder') === true,
-                    variant_name: row.data('size'),
-                    stock_id: row.data('stock-id'),
-                    unit_price: unitPrice // *** এখানে আপডেট হওয়া সঠিক দামটি পাঠানো হচ্ছে ***
-                });
+                    selectedItems.push({
+                        size: row.data('size'),
+                        quantity: quantity,
+                        is_preorder: row.data('is-preorder') === true,
+                        variant_name: row.data('size'),
+                        stock_id: row.data('stock-id'),
+                        unit_price: unitPrice // *** এখানে আপডেট হওয়া সঠিক দামটি পাঠানো হচ্ছে ***
+                    });
+                }
             }
-        }
-    });
-    return selectedItems;
-}
+        });
+        return selectedItems;
+    }
 
     function setHiddenSelectedItems(items) {
         if (!$('#option-choice-form').find('input[name="selected_items"]').length) {
@@ -880,153 +892,159 @@ function extractSelectedItems() {
     }
 
 
-// details.blade.php
+    // details.blade.php
 
-function buyNowFromTable(isPreorder = false) {
-    const selectedItems = extractSelectedItems();
-    if (selectedItems.length === 0) {
-        AIZ.plugins.notify('warning', '{{ translate('Please select at least one item') }}');
-        return;
-    }
+    function buyNowFromTable(isPreorder = false) {
+        const selectedItems = extractSelectedItems();
+        if (selectedItems.length === 0) {
+            AIZ.plugins.notify('warning', '{{ translate('Please select at least one item') }}');
+            return;
+        }
 
-    let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
+        let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
 
-    if (hasPreorderItem) {
-        // --- Pre-order Logic (এটি অপরিবর্তিত আছে) ---
-        const preorderForm = document.createElement('form');
-        preorderForm.method = 'POST';
-        preorderForm.action = '{{ route('preorder.direct_checkout') }}';
-        // ... (বাকি প্রি-অর্ডার কোড)
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = '{{ csrf_token() }}';
-        preorderForm.appendChild(csrfInput);
-        const productIdInput = document.createElement('input');
-        productIdInput.type = 'hidden';
-        productIdInput.name = 'product_id';
-        productIdInput.value = {{ $detailedProduct->id }};
-        preorderForm.appendChild(productIdInput);
-        const selectedItemsInput = document.createElement('input');
-        selectedItemsInput.type = 'hidden';
-        selectedItemsInput.name = 'selected_items';
-        selectedItemsInput.value = JSON.stringify(selectedItems);
-        preorderForm.appendChild(selectedItemsInput);
-        document.body.appendChild(preorderForm);
-        preorderForm.submit();
+        if (hasPreorderItem) {
+            // --- Pre-order Logic (এটি অপরিবর্তিত আছে) ---
+            const preorderForm = document.createElement('form');
+            preorderForm.method = 'POST';
+            preorderForm.action = '{{ route('preorder.direct_checkout') }}';
+            // ... (বাকি প্রি-অর্ডার কোড)
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            preorderForm.appendChild(csrfInput);
+            const productIdInput = document.createElement('input');
+            productIdInput.type = 'hidden';
+            productIdInput.name = 'product_id';
+            productIdInput.value = {{ $detailedProduct->id }};
+            preorderForm.appendChild(productIdInput);
+            const selectedItemsInput = document.createElement('input');
+            selectedItemsInput.type = 'hidden';
+            selectedItemsInput.name = 'selected_items';
+            selectedItemsInput.value = JSON.stringify(selectedItems);
+            preorderForm.appendChild(selectedItemsInput);
+            document.body.appendChild(preorderForm);
+            preorderForm.submit();
 
-    } else {
-        // --- Regular "Buy Now" Logic (এখানে প্রধান পরিবর্তন করা হয়েছে) ---
-        
-        // ধাপ ১: প্রথমে কার্ট খালি করার জন্য AJAX রিকোয়েস্ট পাঠানো হচ্ছে
-        $.ajax({
-            type: "POST",
-            url: '{{ route('cart.clearForBuyNow') }}',
-            data: { _token: '{{ csrf_token() }}' },
-            success: function(clearResponse) {
-                if (clearResponse.status == 1) {
-                    
-                    // ধাপ ২: কার্ট খালি হওয়ার পর, নতুন আইটেম যোগ করার জন্য দ্বিতীয় AJAX রিকোয়েস্ট পাঠানো হচ্ছে
-                    setHiddenSelectedItems(selectedItems);
-                    const form = document.getElementById('option-choice-form');
-                    const formData = new FormData(form);
-                    
-                    $.ajax({
-                        type: "POST",
-                        url: '{{ route('cart.addToCart') }}',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(addResponse) {
-                            if (addResponse.status == 1) {
-                                // সফলভাবে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
-                                window.location.href = "{{ route('checkout') }}";
-                            } else {
-                                AIZ.plugins.notify('danger', addResponse.message || "{{ translate('Something went wrong') }}");
+        } else {
+            // --- Regular "Buy Now" Logic (এখানে প্রধান পরিবর্তন করা হয়েছে) ---
+
+            // ধাপ ১: প্রথমে কার্ট খালি করার জন্য AJAX রিকোয়েস্ট পাঠানো হচ্ছে
+            $.ajax({
+                type: "POST",
+                url: '{{ route('cart.clearForBuyNow') }}',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(clearResponse) {
+                    if (clearResponse.status == 1) {
+
+                        // ধাপ ২: কার্ট খালি হওয়ার পর, নতুন আইটেম যোগ করার জন্য দ্বিতীয় AJAX রিকোয়েস্ট পাঠানো হচ্ছে
+                        setHiddenSelectedItems(selectedItems);
+                        const form = document.getElementById('option-choice-form');
+                        const formData = new FormData(form);
+
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('cart.addToCart') }}',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(addResponse) {
+                                if (addResponse.status == 1) {
+                                    // সফলভাবে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
+                                    window.location.href = "{{ route('checkout') }}";
+                                } else {
+                                    AIZ.plugins.notify('danger', addResponse.message ||
+                                        "{{ translate('Something went wrong') }}");
+                                }
+                            },
+                            error: function() {
+                                AIZ.plugins.notify('danger',
+                                    "{{ translate('Failed to add items to cart.') }}");
                             }
-                        },
-                        error: function() {
-                            AIZ.plugins.notify('danger', "{{ translate('Failed to add items to cart.') }}");
-                        }
-                    });
+                        });
 
-                } else {
-                     AIZ.plugins.notify('danger', clearResponse.message || "{{ translate('Could not clear cart.') }}");
+                    } else {
+                        AIZ.plugins.notify('danger', clearResponse.message ||
+                            "{{ translate('Could not clear cart.') }}");
+                    }
+                },
+                error: function() {
+                    AIZ.plugins.notify('danger',
+                        "{{ translate('An error occurred while preparing your order.') }}");
                 }
-            },
-            error: function() {
-                AIZ.plugins.notify('danger', "{{ translate('An error occurred while preparing your order.') }}");
-            }
-        });
+            });
+        }
     }
-}
 
 
 
-   
-// function buyNowFromTable(isPreorder = false) {
-//     const selectedItems = extractSelectedItems();
-//     if (selectedItems.length === 0) {
-//         AIZ.plugins.notify('warning', '{{ translate('Please select at least one item') }}');
-//         return;
-//     }
 
-//     let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
+    // function buyNowFromTable(isPreorder = false) {
+    //     const selectedItems = extractSelectedItems();
+    //     if (selectedItems.length === 0) {
+    //         AIZ.plugins.notify('warning', '{{ translate('Please select at least one item') }}');
+    //         return;
+    //     }
 
-//     if (hasPreorderItem) {
-//         // --- Pre-order Logic ---
-//         const preorderForm = document.createElement('form');
-//         preorderForm.method = 'POST';
-//         preorderForm.action = '{{ route('preorder.direct_checkout') }}';
+    //     let hasPreorderItem = isPreorder || selectedItems.some(item => item.is_preorder);
 
-//         const csrfInput = document.createElement('input');
-//         csrfInput.type = 'hidden';
-//         csrfInput.name = '_token';
-//         csrfInput.value = '{{ csrf_token() }}';
-//         preorderForm.appendChild(csrfInput);
+    //     if (hasPreorderItem) {
+    //         // --- Pre-order Logic ---
+    //         const preorderForm = document.createElement('form');
+    //         preorderForm.method = 'POST';
+    //         preorderForm.action = '{{ route('preorder.direct_checkout') }}';
 
-//         const productIdInput = document.createElement('input');
-//         productIdInput.type = 'hidden';
-//         productIdInput.name = 'product_id';
-//         productIdInput.value = {{ $detailedProduct->id }};
-//         preorderForm.appendChild(productIdInput);
+    //         const csrfInput = document.createElement('input');
+    //         csrfInput.type = 'hidden';
+    //         csrfInput.name = '_token';
+    //         csrfInput.value = '{{ csrf_token() }}';
+    //         preorderForm.appendChild(csrfInput);
 
-//         const selectedItemsInput = document.createElement('input');
-//         selectedItemsInput.type = 'hidden';
-//         selectedItemsInput.name = 'selected_items';
-//         selectedItemsInput.value = JSON.stringify(selectedItems);
-//         preorderForm.appendChild(selectedItemsInput);
+    //         const productIdInput = document.createElement('input');
+    //         productIdInput.type = 'hidden';
+    //         productIdInput.name = 'product_id';
+    //         productIdInput.value = {{ $detailedProduct->id }};
+    //         preorderForm.appendChild(productIdInput);
 
-//         document.body.appendChild(preorderForm);
-//         preorderForm.submit();
+    //         const selectedItemsInput = document.createElement('input');
+    //         selectedItemsInput.type = 'hidden';
+    //         selectedItemsInput.name = 'selected_items';
+    //         selectedItemsInput.value = JSON.stringify(selectedItems);
+    //         preorderForm.appendChild(selectedItemsInput);
 
-//     } else {
-       
-//         setHiddenSelectedItems(selectedItems); // This is from your existing code
-//         const form = document.getElementById('option-choice-form');
-//         const formData = new FormData(form);
-//         formData.append('buy_now', '1');
+    //         document.body.appendChild(preorderForm);
+    //         preorderForm.submit();
 
-//         $.ajax({
-//             type: "POST",
-//             url: '{{ route('cart.addToCart') }}',
-//             data: formData,
-//             processData: false,
-//             contentType: false,
-//             success: function(data) {
-//                 if (data.status == 1) {
-//                     // সফলভাবে কার্টে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
-//                     window.location.href = "{{ route('checkout') }}";
-//                 } else {
-//                     AIZ.plugins.notify('danger', data.message || "{{ translate('Something went wrong') }}");
-//                 }
-//             },
-//             error: function() {
-//                 AIZ.plugins.notify('danger', "{{ translate('Something went wrong') }}");
-//             }
-//         });
-//     }
-// }
+    //     } else {
+
+    //         setHiddenSelectedItems(selectedItems); // This is from your existing code
+    //         const form = document.getElementById('option-choice-form');
+    //         const formData = new FormData(form);
+    //         formData.append('buy_now', '1');
+
+    //         $.ajax({
+    //             type: "POST",
+    //             url: '{{ route('cart.addToCart') }}',
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false,
+    //             success: function(data) {
+    //                 if (data.status == 1) {
+    //                     // সফলভাবে কার্টে যোগ হওয়ার পর চেকআউট পেজে রিডাইরেক্ট
+    //                     window.location.href = "{{ route('checkout') }}";
+    //                 } else {
+    //                     AIZ.plugins.notify('danger', data.message || "{{ translate('Something went wrong') }}");
+    //                 }
+    //             },
+    //             error: function() {
+    //                 AIZ.plugins.notify('danger', "{{ translate('Something went wrong') }}");
+    //             }
+    //         });
+    //     }
+    // }
 
     $(document).ready(function() {
         loadCartState();
@@ -1036,7 +1054,8 @@ function buyNowFromTable(isPreorder = false) {
         $('#sizeTable tbody tr').each(function(index) {
             const row = $(this);
             const stockQty = parseInt(row.data('stock-qty')) || 0;
-            const isRowPreorder = row.data('is-preorder') === true || row.data('is-preorder') === 'true';
+            const isRowPreorder = row.data('is-preorder') === true || row.data('is-preorder') ===
+                'true';
             const hasAddButton = row.find('.add-btn').length > 0;
             const hasQuantityControl = row.find('.quantity-control').length > 0;
             const renderAddBtnExpected = (stockQty > 0) || isRowPreorder; // mirrors blade condition
@@ -1055,7 +1074,8 @@ function buyNowFromTable(isPreorder = false) {
             const input = $(this);
             let value = parseInt(input.val()) || 0;
             const row = input.closest('tr');
-            const isRowPreorder = row.data('is-preorder') === true || row.data('is-preorder') === 'true';
+            const isRowPreorder = row.data('is-preorder') === true || row.data('is-preorder') ===
+                'true';
             const stockQty = parseInt(row.data('stock-qty')) || 0;
 
             if (isRowPreorder) {
@@ -1116,4 +1136,3 @@ function buyNowFromTable(isPreorder = false) {
         }
     });
 </script>
-

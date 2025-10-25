@@ -57,7 +57,7 @@
             </tr>
         </tfoot>
     </table>
-    
+
     <div class="mt-4">
         <h4 class="text-center">{{ translate('Pay Now') }}:</h4>
         <h2 class="text-center fw-700 text-primary">{{ single_price($advance_amount ?? 0) }}</h2>

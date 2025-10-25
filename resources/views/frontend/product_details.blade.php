@@ -6,81 +6,69 @@
 
 @section('meta_keywords'){{ $detailedProduct->tags }}@stop
 
-{{-- Mohammad Hassan --}}
+    {{-- Mohammad Hassan --}}
 @section('meta')
     <x-product-meta :product="$detailedProduct" />
 @endsection
 
 @section('content')
-      <!-- Main Product Section -->
-    <section class="product-details-main">
+    <!-- Main Product Section -->
+    <section class="product-details-main py-3">
         <div class="container-full">
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div class="row" >
-                    <!-- Product Image Gallery -->
-                   <div class="row col-xl-9 col-lg-12" style="padding-right: 0px!important;">
-                        {{-- Gallery Column --}}
-                        <div class="col-xl-5 col-lg-5">
-                            <div class="product-gallery-section p-3">
-                                @include('frontend.product_details.image_gallery')
+                <div class="row">
+                    <!-- CHANGE: Main content wrapper with responsive columns -->
+                    <div class="col-xl-8 col-lg-12">
+                        <div class="row">
+                            <!-- CHANGE: Gallery column with responsive classes -->
+                            <div class="col-md-6 col-12">
+                                <div class="product-gallery-section p-3">
+                                    @include('frontend.product_details.image_gallery')
+                                </div>
                             </div>
-                        </div>
 
-                        {{-- Details Column --}}
-                        <div class="col-xl-7 col-lg-7">
-                            <div class="product-info-section" style="padding: 22px 0px 0px 0px;">
-                                @include('frontend.product_details.details')
+                            <!-- CHANGE: Details column with responsive classes -->
+                            <div class="col-md-6 col-12">
+                                <div class="product-info-section pt-3 pr-3 pl-2 pl-md-0">
+                                    @include('frontend.product_details.details')
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Description and Video Section - Full Width -->
-                        <div class="">
-                            <div class="product-description-section px-3 mt-4">
-                                @include('frontend.product_details.description')
+                            <!-- CHANGE: Description section, now full width on all screens inside its parent -->
+                            <div class="col-12">
+                                <div class="product-description-section px-3 mt-0 mt-md-4">
+                                    @include('frontend.product_details.description')
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <style>
-                        @media (min-width: 1200px) {
-                            .col-xl-9 {
-                                -ms-flex: 0 0 80%;
-                                flex: 0 0 80%;
-                                max-width: 80%;
-                            }
-                                .col-xl-3 {
-                            -ms-flex: 0 0 20%;
-                            flex: 0 0 20%;
-                            max-width: 20%;
-                        }
-                      }
-                      .card .card-body {
-                        padding: 20px 10px;
-                      }
-                    </style>
-                                    
 
-                    <!-- Shipping Information Sidebar -->
-                    <div class="col-xl-3 col-lg-12">
-                        <div class="shipping-info-sectionborder-left bg-light" style="padding-left: 8px;">
+                    <!-- CHANGE: Sidebar with responsive columns and margin for mobile -->
+                    <div class="col-xl-4 col-lg-12 mt-1 mt-xl-0">
+                        <div class="shipping-info-section border-top border-xl-left bg-light h-100 p-1">
                             @include('frontend.product_details.shipping_charge')
 
-
-                    <div class="">
-                        @include('frontend.product_details.seller_info')
-                       <div class="d-none d-lg-block">
-                            @include('frontend.product_details.top_selling_products')
-                       </div>
-                    </div>
+                            <div class="mt-4">
+                                @include('frontend.product_details.seller_info')
+                                <div class="d-none d-lg-block mt-4">
+                                    @include('frontend.product_details.top_selling_products')
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                   
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- For mobile view, show top selling products outside the main card -->
+    <div class="container-full mt-4 d-lg-none">
+        @include('frontend.product_details.top_selling_products')
+    </div>
+
     @include('frontend.inc.footer')
 @endsection
+
 
 @section('modal')
     <!-- Image Modal -->
@@ -95,8 +83,7 @@
                 </div>
                 <div class="p-4">
                     <div class="size-300px size-lg-450px">
-                        <img class="img-fit h-100 lazyload"
-                            src="{{ static_asset('assets/img/placeholder.jpg') }}"
+                        <img class="img-fit h-100 lazyload" src="{{ static_asset('assets/img/placeholder.jpg') }}"
                             data-src=""
                             onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';">
                     </div>
@@ -123,8 +110,7 @@
                     <div class="modal-body gry-bg px-3 pt-3">
                         <div class="form-group">
                             <input type="text" class="form-control mb-3 rounded-0" name="title"
-                                value="{{ $detailedProduct->name }}" placeholder="{{ translate('Product Name') }}"
-                                required>
+                                value="{{ $detailedProduct->name }}" placeholder="{{ translate('Product Name') }}" required>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control rounded-0" rows="8" name="message" required
@@ -134,7 +120,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-primary fw-600 rounded-0"
                             data-dismiss="modal">{{ translate('Cancel') }}</button>
-                        <button type="submit" class="btn btn-primary fw-600 rounded-0 w-100px">{{ translate('Send') }}</button>
+                        <button type="submit"
+                            class="btn btn-primary fw-600 rounded-0 w-100px">{{ translate('Send') }}</button>
                     </div>
                 </form>
             </div>
@@ -142,34 +129,40 @@
     </div>
 
     <!-- Bid Modal -->
-    @if($detailedProduct->auction_product == 1)
+    @if ($detailedProduct->auction_product == 1)
         @php
             $highest_bid = $detailedProduct->bids->max('amount');
-            $min_bid_amount = $highest_bid != null ? $highest_bid+1 : $detailedProduct->starting_bid;
+            $min_bid_amount = $highest_bid != null ? $highest_bid + 1 : $detailedProduct->starting_bid;
         @endphp
-        <div class="modal fade" id="bid_for_detail_product" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="bid_for_detail_product" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ translate('Bid For Product') }} <small>({{ translate('Min Bid Amount: ').$min_bid_amount }})</small> </h5>
+                        <h5 class="modal-title" id="exampleModalLabel">{{ translate('Bid For Product') }}
+                            <small>({{ translate('Min Bid Amount: ') . $min_bid_amount }})</small> </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" action="{{ route('auction_product_bids.store') }}" method="POST" enctype="multipart/form-data">
+                        <form class="form-horizontal" action="{{ route('auction_product_bids.store') }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $detailedProduct->id }}">
                             <div class="form-group">
                                 <label class="form-label">
-                                    {{translate('Place Bid Price')}}
+                                    {{ translate('Place Bid Price') }}
                                     <span class="text-danger">*</span>
                                 </label>
                                 <div class="form-group">
-                                    <input type="number" step="0.01" class="form-control form-control-sm" name="amount" min="{{ $min_bid_amount }}" placeholder="{{ translate('Enter Amount') }}" required>
+                                    <input type="number" step="0.01" class="form-control form-control-sm"
+                                        name="amount" min="{{ $min_bid_amount }}"
+                                        placeholder="{{ translate('Enter Amount') }}" required>
                                 </div>
                             </div>
                             <div class="form-group text-right">
-                                <button type="submit" class="btn btn-sm btn-primary transition-3d-hover mr-1">{{ translate('Submit') }}</button>
+                                <button type="submit"
+                                    class="btn btn-sm btn-primary transition-3d-hover mr-1">{{ translate('Submit') }}</button>
                             </div>
                         </form>
                     </div>
@@ -199,7 +192,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body c-scrollbar-light">
-                    @if($detailedProduct->warranty_note_id != null)
+                    @if ($detailedProduct->warranty_note_id != null)
                         <p>{{ $detailedProduct->warrantyNote->getTranslation('description') }}</p>
                     @endif
                 </div>
@@ -216,7 +209,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body c-scrollbar-light">
-                    @if($detailedProduct->refund_note_id != null)
+                    @if ($detailedProduct->refund_note_id != null)
                         <p>{{ $detailedProduct->refundNote->getTranslation('description') }}</p>
                     @endif
                 </div>
@@ -243,36 +236,18 @@
                 AIZ.plugins.notify('danger', '{{ translate('Oops, unable to copy') }}');
             }
             $temp.remove();
-            // if (document.selection) {
-            //     var range = document.body.createTextRange();
-            //     range.moveToElementText(document.getElementById(containerid));
-            //     range.select().createTextRange();
-            //     document.execCommand("Copy");
-
-            // } else if (window.getSelection) {
-            //     var range = document.createRange();
-            //     document.getElementById(containerid).style.display = "block";
-            //     range.selectNode(document.getElementById(containerid));
-            //     window.getSelection().addRange(range);
-            //     document.execCommand("Copy");
-            //     document.getElementById(containerid).style.display = "none";
-
-            // }
-            // AIZ.plugins.notify('success', 'Copied');
         }
 
         function show_chat_modal() {
             @if (Auth::check())
                 $('#chat_modal').modal('show');
             @else
-                // Mohammad Hassan
-$('#customerAuthModal').modal('show');
+                $('#customerAuthModal').modal('show');
             @endif
         }
 
-        // Pagination using ajax
         $(window).on('hashchange', function() {
-            if(window.history.pushState) {
+            if (window.history.pushState) {
                 window.history.pushState('', '/', window.location.pathname);
             } else {
                 window.location.hash = '';
@@ -297,15 +272,16 @@ $('#customerAuthModal').modal('show');
             $.ajax({
                 url: '?page=' + page,
                 dataType: 'json',
-                data: {type: type},
+                data: {
+                    type: type
+                },
             }).done(function(data) {
-                $('.'+section).html(data);
+                $('.' + section).html(data);
                 location.hash = page;
             }).fail(function() {
                 alert('Something went worng! Data could not be loaded.');
             });
         }
-        // Pagination end
 
         function showImage(photo) {
             $('#image_modal img').attr('src', photo);
@@ -313,13 +289,12 @@ $('#customerAuthModal').modal('show');
             $('#image_modal').modal('show');
         }
 
-        function bid_modal(){
+        function bid_modal() {
             @if (isCustomer() || isSeller())
                 $('#bid_for_detail_product').modal('show');
-          	@elseif (isAdmin())
-                AIZ.plugins.notify('warning', '{{ translate("Sorry, Only customers & Sellers can Bid.") }}');
+            @elseif (isAdmin())
+                AIZ.plugins.notify('warning', '{{ translate('Sorry, Only customers & Sellers can Bid.') }}');
             @else
-                // Mohammad Hassan
                 $('#customerAuthModal').modal('show');
             @endif
         }
@@ -338,26 +313,26 @@ $('#customerAuthModal').modal('show');
                         AIZ.extra.inputRating();
                     });
                 @else
-                    AIZ.plugins.notify('warning', '{{ translate("Sorry, You need to buy this product to give review.") }}');
+                    AIZ.plugins.notify('warning',
+                    '{{ translate('Sorry, You need to buy this product to give review.') }}');
                 @endif
             @elseif (Auth::check() && !isCustomer())
-                AIZ.plugins.notify('warning', '{{ translate("Sorry, Only customers can give review.") }}');
+                AIZ.plugins.notify('warning', '{{ translate('Sorry, Only customers can give review.') }}');
             @else
-                // Mohammad Hassan
                 $('#customerAuthModal').modal('show');
             @endif
         }
 
-        function showSizeChartDetail(id, name){
+        function showSizeChartDetail(id, name) {
             $('#size-chart-show-modal .modal-title').html('');
             $('#size-chart-show-modal .modal-body').html('');
             if (id == 0) {
-                AIZ.plugins.notify('warning', '{{ translate("Sorry, There is no size guide found for this product.") }}');
+                AIZ.plugins.notify('warning', '{{ translate('Sorry, There is no size guide found for this product.') }}');
                 return false;
             }
             $.ajax({
                 type: "GET",
-                url: "{{ route('size-charts-show', '') }}/"+id,
+                url: "{{ route('size-charts-show', '') }}/" + id,
                 data: {},
                 success: function(data) {
                     $('#size-chart-show-modal .modal-title').html(name);
@@ -368,4 +343,3 @@ $('#customerAuthModal').modal('show');
         }
     </script>
 @endsection
-
